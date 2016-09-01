@@ -7,9 +7,6 @@ module NYpostGrabber
   require 'pathname'
   require 'date'
 
-  ################################################
-  #need to return date on get covers
-  ###############################################
   def self.get_new_covers(directory = nil)
 
 
@@ -34,28 +31,26 @@ module NYpostGrabber
     end_date    = Date.parse('1-1-2002') #last archived covers
     next_page   = ""
 
-      while true
+    while true
 
-        begin 
-          next_page, last_date = get_cover page, agent, directory = directory
-          next_date = last_date.prev_day.strftime('%Y-%m-%d')
-          
-          page = agent.get next_page 
-          # return false if next page is before the last archived day. 
-          if File.exists?("#{directory}#{next_date}-front-cover.jpg") && File.exists?("#{directory}#{next_date}-back-cover.jpg") 
-            puts "up to date"
-            return false
-          end
+      begin 
+        next_page, last_date = get_cover page, agent, directory = directory
+        next_date = last_date.prev_day.strftime('%Y-%m-%d')
 
-        rescue ArgumentError
-          # exit on issues for debugging to avoid infinite loops
-          puts "The module Date is throwing a fit for the url  #{next_page}.  Check to make sure those files downloaded."
+        page = agent.get next_page 
+        # return false if next page is before the last archived day. 
+        if File.exists?("#{directory}#{next_date}-front-cover.jpg") && File.exists?("#{directory}#{next_date}-back-cover.jpg") 
+          puts "up to date"
+          return false
         end
 
+      rescue ArgumentError
+        # exit on issues for debugging to avoid infinite loops
+        puts "The module Date is throwing a fit for the url  #{next_page}.  Check to make sure those files downloaded."
       end
-  end
 
-  ################################################################
+    end
+  end
 
   def self.get_all_covers(directory = nil)
 
