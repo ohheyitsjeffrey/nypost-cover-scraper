@@ -9,7 +9,6 @@ module NYpostGrabber
 
   def self.get_new_covers(directory = nil)
 
-
     if directory == nil || !File.directory?(directory)
       raise NeedsDirectoryError
     end
@@ -22,17 +21,14 @@ module NYpostGrabber
     agent = Mechanize.new
     agent.user_agent_alias = 'Mac Safari' # its a mac brah
     page  = agent.get url 
-
     # TODO find a way to make this simpler if possible as it feels sloppy
     url = page.parser.css('#primary > div > div.featured-covers > article:nth-child(1) > div.entry-thumbnail-wrapper > a')
     url = Hash.from_xml(url.to_xml)['a']['href']
-
     page        = agent.get url
     end_date    = Date.parse('1-1-2002') #last archived covers
     next_page   = ""
 
     while true
-
       begin 
         next_page, last_date = get_cover page, agent, directory = directory
         next_date = last_date.prev_day.strftime('%Y-%m-%d')
@@ -43,12 +39,10 @@ module NYpostGrabber
           puts "up to date"
           return false
         end
-
       rescue ArgumentError
         # exit on issues for debugging to avoid infinite loops
         puts "The module Date is throwing a fit for the url  #{next_page}.  Check to make sure those files downloaded."
       end
-
     end
   end
 
@@ -66,17 +60,14 @@ module NYpostGrabber
     agent = Mechanize.new
     agent.user_agent_alias = 'Mac Safari' # its a mac brah
     page  = agent.get url 
-
     # TODO find a way to make this simpler if possible as it feels sloppy
     url = page.parser.css('#primary > div > div.featured-covers > article:nth-child(1) > div.entry-thumbnail-wrapper > a')
     url = Hash.from_xml(url.to_xml)['a']['href']
-
     page      = agent.get url
     end_date  = Date.parse('1-1-2002') #last archived covers
     next_page = ""
 
     while true
-
       begin 
         next_page, last_date = get_cover page, agent, directory = directory
         page  = agent.get next_page 
@@ -85,12 +76,10 @@ module NYpostGrabber
           puts "Reached last archived cover on #{end_date}"
           return false
         end
-
       rescue ArgumentError
         # exit on issues for debugging to avoid infinite loops
         puts "The module Date is throwing a fit for the url  #{next_page}.  Check to make sure those files downloaded."
       end
-
     end
 
   end
@@ -106,20 +95,15 @@ module NYpostGrabber
     file_path   = Pathname.new(directory)
 
     if !File.exists?("#{directory}#{date}-front-cover.jpg") && !File.exists?("#{directory}#{date}-back-cover.jpg") 
-
       puts "Downloading covers for #{date_string}"
-
       #download front cover
       agent.get(front_src).save "#{directory}#{date}-front-cover.jpg"
       #download back cover
       agent.get(back_src).save "#{directory}#{date}-back-cover.jpg"
-
     else
       puts "skipping covers for #{date_string} as they already exists"
     end
-
     return yesterday, date
-
   end
 
 end
