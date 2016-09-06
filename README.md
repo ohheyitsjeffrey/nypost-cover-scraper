@@ -1,5 +1,4 @@
-coming soon!
+A work in progress.  I built this for fun and still need to package it into an installable module.  
 
-Please do not take this project as an endorsement of the New York Post.  This exists simply for archiving (and most likely humorous) purposes.
 
 Released under the do whatever you want with this license.
